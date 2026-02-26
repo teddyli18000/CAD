@@ -1,4 +1,4 @@
-//{{NO_DEPENDENCIES}}
+﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
 // Used by CAD.rc
 //
@@ -34,6 +34,7 @@
 #define IDC_DRAW_CIRCLE                 1025
 #define IDC_DRAW_RECT                   1026
 #define IDC_DRAW_ARC                    1027
+#define IDC_ABOUT_ICON                  1028
 
 // Next default values for new objects
 // 

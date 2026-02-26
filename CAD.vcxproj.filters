@@ -90,6 +90,9 @@
     <None Include="res\CAD.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="resource.hm">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\CAD.ico">

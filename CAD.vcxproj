@@ -213,6 +213,7 @@
     <ResourceCompile Include="CAD.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resource.hm" />
     <None Include="res\CAD.rc2" />
   </ItemGroup>
   <ItemGroup>

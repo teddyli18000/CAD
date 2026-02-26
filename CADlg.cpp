@@ -31,6 +31,7 @@ double AngleDistanceCCW(double from, double to) {
 
 BEGIN_MESSAGE_MAP(CCADDlg, CDialogEx)
     ON_WM_PAINT()
+    ON_WM_DRAWITEM()
     ON_WM_SIZE()
     ON_WM_SETFOCUS()
     ON_WM_LBUTTONDOWN()
@@ -62,6 +63,7 @@ BEGIN_MESSAGE_MAP(CCADDlg, CDialogEx)
     ON_BN_CLICKED(IDC_SAVE_AS, &CCADDlg::OnBnClickedSaveAs)
     ON_BN_CLICKED(IDC_UNDO, &CCADDlg::OnBnClickedUndo)
     ON_BN_CLICKED(IDC_REDO, &CCADDlg::OnBnClickedRedo)
+    ON_BN_CLICKED(IDC_ABOUT_ICON, &CCADDlg::OnBnClickedAboutIcon)
 END_MESSAGE_MAP()
 
 CCADDlg::CCADDlg(CWnd* pParent)
@@ -109,6 +111,51 @@ BOOL CCADDlg::OnInitDialog() {
 void CCADDlg::OnSetFocus(CWnd* pOldWnd) {
     CDialogEx::OnSetFocus(pOldWnd);
     FocusCommandLine();
+}
+
+void CCADDlg::DrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct) {
+    if (nIDCtl == IDC_ABOUT_ICON) {
+        CDC dc;
+        dc.Attach(lpDrawItemStruct->hDC);
+
+        CRect rc = lpDrawItemStruct->rcItem;
+        dc.FillSolidRect(&rc, GetSysColor(COLOR_3DFACE));
+
+        CRect circleRc = rc;
+        circleRc.DeflateRect(1, 1);
+
+        CPen pen(PS_SOLID, 1, RGB(0, 85, 170));
+        CBrush brush(RGB(0, 122, 204));
+        CPen* oldPen = dc.SelectObject(&pen);
+        CBrush* oldBrush = dc.SelectObject(&brush);
+        dc.Ellipse(&circleRc);
+        dc.SelectObject(oldBrush);
+        dc.SelectObject(oldPen);
+
+        int oldBkMode = dc.SetBkMode(TRANSPARENT);
+        COLORREF oldTextColor = dc.SetTextColor(RGB(255, 255, 255));
+
+        CFont font;
+        font.CreateFont(11, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0,
+            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+            DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Segoe UI"));
+        CFont* oldFont = dc.SelectObject(&font);
+
+        dc.DrawText(_T("?"), &circleRc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+        dc.SelectObject(oldFont);
+        dc.SetTextColor(oldTextColor);
+        dc.SetBkMode(oldBkMode);
+
+        if ((lpDrawItemStruct->itemState & ODS_FOCUS) != 0) {
+            dc.DrawFocusRect(&rc);
+        }
+
+        dc.Detach();
+        return;
+    }
+
+    UNREFERENCED_PARAMETER(lpDrawItemStruct);
 }
 
 void CCADDlg::FocusCommandLine() {
@@ -843,5 +890,11 @@ void CCADDlg::OnBnClickedUndo() {
 void CCADDlg::OnBnClickedRedo() {
     m_shapeMgr.Redo();
     RefreshCanvas();
+    FocusCommandLine();
+}
+
+void CCADDlg::OnBnClickedAboutIcon() {
+    CDialogEx aboutDlg(IDD_ABOUTBOX, this);
+    aboutDlg.DoModal();
     FocusCommandLine();
 }

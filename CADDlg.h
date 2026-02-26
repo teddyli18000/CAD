@@ -64,6 +64,7 @@ protected:
 
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual void DrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 
 	afx_msg void OnPaint();
@@ -95,6 +96,7 @@ protected:
 	afx_msg void OnBnClickedSaveAs();
 	afx_msg void OnBnClickedUndo();
 	afx_msg void OnBnClickedRedo();
+	afx_msg void OnBnClickedAboutIcon();
 
 	void ProcessCommandLine(const CString& cmd);
 	void CancelCurrentDrawing();
