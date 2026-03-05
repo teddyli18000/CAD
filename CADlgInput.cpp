@@ -8,6 +8,17 @@
 
 // 输入模块 / input module
 
+namespace {
+const double kZoomInFactor = 1.2;
+const double kZoomOutFactor = 0.8;
+}
+
+// 功能：处理鼠标左键按下，按当前模式分发到对应工具。
+// 交互步骤（LButtonDown）：
+// 1) 先判断点击是否在画布内（in canvas）。
+// 2) 坐标从屏幕坐标转换成局部/世界坐标（screen -> local/world）。
+// 3) 根据当前模式把事件交给具体工具处理。
+// 4) 若工具返回 handled，则只刷新画布区域。
 void CCADDlg::OnLButtonDown(UINT nFlags, CPoint point) {
     CRect rect = m_transform.GetScreenRect();
     if (!rect.PtInRect(point)) {
@@ -50,6 +61,7 @@ void CCADDlg::OnLButtonDown(UINT nFlags, CPoint point) {
     FocusCommandLine();
 }
 
+// 功能：处理鼠标移动，包括平移和各绘图工具的预览更新。
 void CCADDlg::OnMouseMove(UINT nFlags, CPoint point) {
     if (m_bIsPanning) {
         m_transform.Pan(point.x - m_lastMousePt.x, point.y - m_lastMousePt.y);
@@ -75,6 +87,7 @@ void CCADDlg::OnMouseMove(UINT nFlags, CPoint point) {
     }
 }
 
+// 功能：处理鼠标左键释放，完成框选或擦除状态收尾。
 void CCADDlg::OnLButtonUp(UINT nFlags, CPoint point) {
     CRect rect = m_transform.GetScreenRect();
     CPoint localPt(point.x - rect.left, point.y - rect.top);
@@ -87,6 +100,7 @@ void CCADDlg::OnLButtonUp(UINT nFlags, CPoint point) {
     FocusCommandLine();
 }
 
+// 功能：处理鼠标右键，结束当前绘制或取消当前命令。
 void CCADDlg::OnRButtonDown(UINT nFlags, CPoint point) {
     UNREFERENCED_PARAMETER(nFlags);
     UNREFERENCED_PARAMETER(point);
@@ -97,12 +111,13 @@ void CCADDlg::OnRButtonDown(UINT nFlags, CPoint point) {
     }
 }
 
+// 功能：处理滚轮缩放，以鼠标位置作为缩放中心。
 BOOL CCADDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) {
     ScreenToClient(&pt);
     CRect rect = m_transform.GetScreenRect();
 
     if (rect.PtInRect(pt)) {
-        double factor = (zDelta > 0) ? 1.2 : 0.8;
+        double factor = (zDelta > 0) ? kZoomInFactor : kZoomOutFactor;
         CPoint localPt(pt.x - rect.left, pt.y - rect.top);
         m_transform.Zoom(factor, localPt);
         RefreshCanvas();
@@ -112,6 +127,7 @@ BOOL CCADDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) {
     return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }
 
+// 功能：处理中键按下，进入平移拖动模式。
 void CCADDlg::OnMButtonDown(UINT nFlags, CPoint point) {
     UNREFERENCED_PARAMETER(nFlags);
     m_bIsPanning = true;
@@ -120,6 +136,7 @@ void CCADDlg::OnMButtonDown(UINT nFlags, CPoint point) {
     FocusCommandLine();
 }
 
+// 功能：处理中键抬起，退出平移拖动模式。
 void CCADDlg::OnMButtonUp(UINT nFlags, CPoint point) {
     UNREFERENCED_PARAMETER(nFlags);
     UNREFERENCED_PARAMETER(point);
@@ -128,6 +145,7 @@ void CCADDlg::OnMButtonUp(UINT nFlags, CPoint point) {
     FocusCommandLine();
 }
 
+// 功能：结束当前折线绘制，并按条件提交命令。
 void CCADDlg::FinishCurrentDrawing(bool keepCommandActive) {
     if (m_bIsDrawing && m_pCurrentLine) {
         auto& pts = const_cast<std::vector<Point2D>&>(m_pCurrentLine->GetPoints());
@@ -152,6 +170,7 @@ void CCADDlg::FinishCurrentDrawing(bool keepCommandActive) {
     FocusCommandLine();
 }
 
+// 功能：取消当前绘制及相关工具状态。
 void CCADDlg::CancelCurrentDrawing() {
     m_bIsDrawing = false;
     m_bLineCommandActive = false;
@@ -178,6 +197,7 @@ void CCADDlg::CancelCurrentDrawing() {
     FocusCommandLine();
 }
 
+// 功能：取消当前激活命令，必要时保留已画有效线段。
 void CCADDlg::CancelActiveCommand() {
     if (m_bIsDrawing && m_bLineCommandActive && m_pCurrentLine) {
         auto& pts = const_cast<std::vector<Point2D>&>(m_pCurrentLine->GetPoints());

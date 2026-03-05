@@ -12,14 +12,29 @@
 // localPt: 画布局部坐标 / canvas local coordinate
 
 namespace {
+const double kPointEpsilon = 1e-9;
+const double kLengthEpsilonSquared = 1e-12;
+const int kMinClosedPolylineSize = 3;
+const int kMinSplitClosedPolylineSize = 4;
+const int kSmoothDetectMinPointCount = 10;
+const int kSmoothDetectMinDirectionCount = 8;
+const double kPi = 3.14159265358979323846;
+const double kTwoPi = 6.28318530717958647692;
+const double kSmoothTurnThreshold = 0.35;
+const double kSmoothRatioThreshold = 0.85;
+const int kSelectionClickThreshold = 2;
+
+// 功能：判断两个世界坐标点是否可视为同一点。
 bool IsSamePoint(const Point2D& a, const Point2D& b) {
-    return std::fabs(a.x - b.x) <= 1e-9 && std::fabs(a.y - b.y) <= 1e-9;
+    return std::fabs(a.x - b.x) <= kPointEpsilon && std::fabs(a.y - b.y) <= kPointEpsilon;
 }
 
+// 功能：判断折线是否为首尾闭合。
 bool IsClosedPolyline(const std::vector<Point2D>& pts) {
-    return pts.size() >= 3 && IsSamePoint(pts.front(), pts.back());
+    return pts.size() >= kMinClosedPolylineSize && IsSamePoint(pts.front(), pts.back());
 }
 
+// 功能：根据点集创建一条基础折线对象。
 std::shared_ptr<CLine> CreateLineFromPoints(const std::vector<Point2D>& pts) {
     if (pts.size() < 2) return nullptr;
     auto line = std::make_shared<CLine>();
@@ -29,6 +44,7 @@ std::shared_ptr<CLine> CreateLineFromPoints(const std::vector<Point2D>& pts) {
     return line;
 }
 
+// 功能：开放折线按命中段切分为左右两段。
 std::vector<std::shared_ptr<CLine>> CreateOpenSplitLines(const std::vector<Point2D>& pts, size_t segEndIndex) {
     std::vector<std::shared_ptr<CLine>> result;
 
@@ -49,9 +65,10 @@ std::vector<std::shared_ptr<CLine>> CreateOpenSplitLines(const std::vector<Point
     return result;
 }
 
+// 功能：闭合折线删除一段后重建保留路径。
 std::vector<std::shared_ptr<CLine>> CreateClosedSegmentRemovedLine(const std::vector<Point2D>& pts, size_t segEndIndex) {
     std::vector<std::shared_ptr<CLine>> result;
-    if (pts.size() < 4) return result;
+    if (pts.size() < kMinSplitClosedPolylineSize) return result;
 
     const size_t vertexCount = pts.size() - 1;
     const size_t removedSeg = segEndIndex - 1;
@@ -70,49 +87,52 @@ std::vector<std::shared_ptr<CLine>> CreateClosedSegmentRemovedLine(const std::ve
     return result;
 }
 
+// 功能：估计折线是否更接近平滑曲线。
 bool IsSmoothCurvePolyline(const std::vector<Point2D>& pts) {
-    if (pts.size() < 10) return false;
+    if (pts.size() < kSmoothDetectMinPointCount) return false;
 
     std::vector<double> dirs;
     dirs.reserve(pts.size());
     for (size_t i = 1; i < pts.size(); ++i) {
         const double dx = pts[i].x - pts[i - 1].x;
         const double dy = pts[i].y - pts[i - 1].y;
-        if (dx * dx + dy * dy <= 1e-12) continue;
+        if (dx * dx + dy * dy <= kLengthEpsilonSquared) continue;
         dirs.push_back(std::atan2(dy, dx));
     }
 
-    if (dirs.size() < 8) return false;
+    if (dirs.size() < kSmoothDetectMinDirectionCount) return false;
 
     int smoothTurns = 0;
     int totalTurns = 0;
     for (size_t i = 1; i < dirs.size(); ++i) {
         double d = std::fabs(dirs[i] - dirs[i - 1]);
-        while (d > 3.14159265358979323846) {
-            d = std::fabs(d - 6.28318530717958647692);
+        while (d > kPi) {
+            d = std::fabs(d - kTwoPi);
         }
         ++totalTurns;
-        if (d <= 0.35) {
+        if (d <= kSmoothTurnThreshold) {
             ++smoothTurns;
         }
     }
 
     if (totalTurns <= 0) return false;
-    return (static_cast<double>(smoothTurns) / static_cast<double>(totalTurns)) >= 0.85;
+    return (static_cast<double>(smoothTurns) / static_cast<double>(totalTurns)) >= kSmoothRatioThreshold;
 }
 }
 
+// 功能：清空当前所有图元的选中状态。
 void CCADDlg::ClearSelection() {
     for (auto& shape : m_shapeMgr.GetShapes()) {
         shape->SetSelected(false);
     }
 }
 
+// 功能：根据框选矩形更新选中图元。
 void CCADDlg::ApplySelectionBox() {
     if (m_currentMode != CADMode::MODE_SELECT || m_bEraserCommandActive || m_bDeleteNodeCommandActive || m_bHatchCommandActive) return;
 
     const CRect box = cad::dlg::NormalizeRect(m_selectBoxStart, m_selectBoxEnd);
-    if (box.Width() < 2 && box.Height() < 2) {
+    if (box.Width() < kSelectionClickThreshold && box.Height() < kSelectionClickThreshold) {
         ClearSelection();
         return;
     }
@@ -125,6 +145,7 @@ void CCADDlg::ApplySelectionBox() {
     }
 }
 
+// 功能：删除当前已选中的线条。
 void CCADDlg::DeleteSelectedLines() {
     std::vector<std::shared_ptr<CLine>> selected;
     for (const auto& shape : m_shapeMgr.GetShapes()) {
@@ -138,6 +159,7 @@ void CCADDlg::DeleteSelectedLines() {
     RefreshCanvas();
 }
 
+// 功能：在指定位置执行整线擦除或节点删除。
 void CCADDlg::EraseAtPoint(const CPoint& localPt) {
     if (!(m_bEraserCommandActive || m_bDeleteNodeCommandActive)) return;
 

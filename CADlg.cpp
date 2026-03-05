@@ -11,6 +11,35 @@
 #define new DEBUG_NEW
 #endif  
 
+namespace {
+const COLORREF kCadColorWhite = RGB(255, 255, 255);
+const COLORREF kCadColorRed = RGB(255, 0, 0);
+const COLORREF kCadColorYellow = RGB(255, 255, 0);
+const COLORREF kCadColorGreen = RGB(0, 255, 0);
+const COLORREF kCadColorCyan = RGB(0, 255, 255);
+const COLORREF kCadColorBlue = RGB(0, 0, 255);
+const COLORREF kCadColorMagenta = RGB(255, 0, 255);
+const COLORREF kCadColorBlack = RGB(0, 0, 0);
+
+const int kColorButtonMinDisplaySize = 12;
+const int kColorButtonInnerMargin = 1;
+const int kColorButtonSizeThreshold = 4;
+
+const int kPanStepPixel = 20;
+const int kEraserRadiusDefault = 18;
+
+const double kZoomInFactor = 1.2;
+const double kZoomOutFactor = 0.8;
+
+void SetButtonPushedState(CCADDlg* pDlg, int ctrlId, bool bPushed) {
+    CWnd* pButton = pDlg->GetDlgItem(ctrlId);
+    if (!pButton || !::IsWindow(pButton->GetSafeHwnd())) {
+        return;
+    }
+    pButton->SendMessage(BM_SETSTATE, bPushed ? TRUE : FALSE, 0);
+}
+}
+
 // 主对话框模块 / main dialog module
 // 下面函数在本文件被调用前的用法说明：
 // - `CreateCirclePolyline(center, radius, segments)`:
@@ -69,6 +98,7 @@ BEGIN_MESSAGE_MAP(CCADDlg, CDialogEx)
     ON_STN_CLICKED(IDC_DRAW_AREA, &CCADDlg::OnStnClickedDrawArea)
 END_MESSAGE_MAP()
 
+// 功能：构造主对话框并初始化所有运行状态。
 CCADDlg::CCADDlg(CWnd* pParent)
     : CDialogEx(IDD_CAD_DIALOG, pParent)
     , m_currentMode(CADMode::MODE_NONE)
@@ -89,7 +119,7 @@ CCADDlg::CCADDlg(CWnd* pParent)
     , m_bIsErasing(false)
     , m_bEraserCursorVisible(false)
     , m_arcPointCount(0)
-    , m_eraserRadius(18)
+    , m_eraserRadius(kEraserRadiusDefault)
     , m_selectBoxStart(0, 0)
     , m_selectBoxEnd(0, 0)
     , m_eraserCursor(0, 0)
@@ -101,14 +131,16 @@ CCADDlg::CCADDlg(CWnd* pParent)
     , m_arcStartPoint(0.0, 0.0)
     , m_arcSecondPoint(0.0, 0.0)
     , m_arcPreviewPoint(0.0, 0.0)
-    , m_hatchColor(RGB(255, 255, 255)) {
+    , m_hatchColor(kCadColorWhite) {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
+// 功能：完成控件与成员变量的数据交换。
 void CCADDlg::DoDataExchange(CDataExchange* pDX) {
     CDialogEx::DoDataExchange(pDX);
 }
 
+// 功能：初始化主界面、绘图区和颜色按钮资源。
 BOOL CCADDlg::OnInitDialog() {
     CDialogEx::OnInitDialog();
 
@@ -122,13 +154,13 @@ BOOL CCADDlg::OnInitDialog() {
 
     struct ColorButtonDef { int ctrlId; COLORREF color; };
     const ColorButtonDef colorButtons[] = {
-        { IDC_COLOR_WHITE, RGB(255, 255, 255) },
-        { IDC_COLOR_RED, RGB(255, 0, 0) },
-        { IDC_COLOR_YELLOW, RGB(255, 255, 0) },
-        { IDC_COLOR_GREEN, RGB(0, 255, 0) },
-        { IDC_COLOR_CYAN, RGB(0, 255, 255) },
-        { IDC_COLOR_BLUE, RGB(0, 0, 255) },
-        { IDC_COLOR_MAGENTA, RGB(255, 0, 255) }
+        { IDC_COLOR_WHITE, kCadColorWhite },
+        { IDC_COLOR_RED, kCadColorRed },
+        { IDC_COLOR_YELLOW, kCadColorYellow },
+        { IDC_COLOR_GREEN, kCadColorGreen },
+        { IDC_COLOR_CYAN, kCadColorCyan },
+        { IDC_COLOR_BLUE, kCadColorBlue },
+        { IDC_COLOR_MAGENTA, kCadColorMagenta }
     };
 
     m_colorButtonBitmaps.clear();
@@ -140,8 +172,8 @@ BOOL CCADDlg::OnInitDialog() {
 
         CRect rc;
         button->GetClientRect(&rc);
-        const int w = (rc.Width() > 4) ? rc.Width() : 12;
-        const int h = (rc.Height() > 4) ? rc.Height() : 12;
+        const int w = (rc.Width() > kColorButtonSizeThreshold) ? rc.Width() : kColorButtonMinDisplaySize;
+        const int h = (rc.Height() > kColorButtonSizeThreshold) ? rc.Height() : kColorButtonMinDisplaySize;
 
         auto bmp = std::make_unique<CBitmap>();
         if (!bmp->CreateCompatibleBitmap(&clientDC, w, h)) continue;
@@ -151,9 +183,9 @@ BOOL CCADDlg::OnInitDialog() {
         CBitmap* oldBmp = memDC.SelectObject(bmp.get());
 
         memDC.FillSolidRect(0, 0, w, h, GetSysColor(COLOR_3DFACE));
-        CRect square(1, 1, w - 1, h - 1);
+        CRect square(kColorButtonInnerMargin, kColorButtonInnerMargin, w - kColorButtonInnerMargin, h - kColorButtonInnerMargin);
         memDC.FillSolidRect(&square, def.color);
-        memDC.Draw3dRect(&square, RGB(0, 0, 0), RGB(0, 0, 0));
+        memDC.Draw3dRect(&square, kCadColorBlack, kCadColorBlack);
 
         memDC.SelectObject(oldBmp);
 
@@ -171,13 +203,8 @@ BOOL CCADDlg::OnInitDialog() {
     return FALSE;
 }
 
+// 功能：根据当前命令状态更新按钮高亮显示。
 void CCADDlg::UpdateModeButtonHighlight() {
-    auto setPushed = [this](int ctrlId, bool pushed) {
-        CWnd* button = GetDlgItem(ctrlId);
-        if (!button || !::IsWindow(button->GetSafeHwnd())) return;
-        button->SendMessage(BM_SETSTATE, pushed ? TRUE : FALSE, 0);
-    };
-
     const bool lineActive = (m_currentMode == CADMode::MODE_DRAW && m_bLineCommandActive);
     const bool circleActive = (m_currentMode == CADMode::MODE_DRAW && m_bCircleCommandActive);
     const bool rectActive = (m_currentMode == CADMode::MODE_DRAW && m_bRectangleCommandActive);
@@ -188,22 +215,24 @@ void CCADDlg::UpdateModeButtonHighlight() {
     const bool deleteNodeActive = (m_currentMode == CADMode::MODE_SELECT && m_bDeleteNodeCommandActive);
     const bool selectModeActive = (m_currentMode == CADMode::MODE_SELECT && !m_bEraserCommandActive && !m_bDeleteNodeCommandActive && !m_bHatchCommandActive);
 
-    setPushed(IDC_DRAW, drawModeActive);
-    setPushed(IDC_DRAW_LINE, lineActive);
-    setPushed(IDC_DRAW_CIRCLE, circleActive);
-    setPushed(IDC_DRAW_RECT, rectActive);
-    setPushed(IDC_DRAW_ARC, arcActive);
-    setPushed(IDC_HATCH, hatchActive);
-    setPushed(IDC_DEL_POINT, deleteNodeActive);
-    setPushed(IDC_SEL, selectModeActive);
-    setPushed(IDC_DEL_LINE, eraseActive);
+    SetButtonPushedState(this, IDC_DRAW, drawModeActive);
+    SetButtonPushedState(this, IDC_DRAW_LINE, lineActive);
+    SetButtonPushedState(this, IDC_DRAW_CIRCLE, circleActive);
+    SetButtonPushedState(this, IDC_DRAW_RECT, rectActive);
+    SetButtonPushedState(this, IDC_DRAW_ARC, arcActive);
+    SetButtonPushedState(this, IDC_HATCH, hatchActive);
+    SetButtonPushedState(this, IDC_DEL_POINT, deleteNodeActive);
+    SetButtonPushedState(this, IDC_SEL, selectModeActive);
+    SetButtonPushedState(this, IDC_DEL_LINE, eraseActive);
 }
 
+// 功能：窗口获得焦点时，把输入焦点切到命令行。
 void CCADDlg::OnSetFocus(CWnd* pOldWnd) {
     CDialogEx::OnSetFocus(pOldWnd);
     FocusCommandLine();
 }
 
+// 功能：将焦点定位到命令行输入框，并把光标放到末尾。
 void CCADDlg::FocusCommandLine() {
     CWnd* cmd = GetDlgItem(IDC_CMD_LINE);
     if (!cmd || !::IsWindow(cmd->GetSafeHwnd())) return;
@@ -219,6 +248,7 @@ void CCADDlg::FocusCommandLine() {
     }
 }
 
+// 功能：只刷新绘图区，避免整窗重绘。
 void CCADDlg::RefreshCanvas() {
     CRect rect = m_transform.GetScreenRect();
     if (!rect.IsRectEmpty()) {
@@ -226,6 +256,7 @@ void CCADDlg::RefreshCanvas() {
     }
 }
 
+// 功能：激活指定命令并重置其他工具状态。
 void CCADDlg::ActivateCommand(CADCommandType commandType) {
     ClearSelection();
     m_bLineCommandActive = false;
@@ -273,6 +304,7 @@ void CCADDlg::ActivateCommand(CADCommandType commandType) {
     FocusCommandLine();
 }
 
+// 功能：保存到当前文件路径。
 bool CCADDlg::SaveToCurrentPath() {
     if (m_currentFilePath.IsEmpty()) return false;
 
@@ -283,6 +315,7 @@ bool CCADDlg::SaveToCurrentPath() {
     return ok;
 }
 
+// 功能：弹出另存为对话框并保存。
 bool CCADDlg::SaveAsWithDialog() {
     CFileDialog dlg(FALSE, L"dxf", nullptr,
         OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY,
@@ -294,60 +327,71 @@ bool CCADDlg::SaveAsWithDialog() {
     return SaveToCurrentPath();
 }
 
+// 功能：激活直线绘制命令。
 void CCADDlg::OnBnClickedDraw() {
     ActivateCommand(CADCommandType::LINE);
 }
 
+// 功能：激活圆形绘制命令。
 void CCADDlg::OnBnClickedCircle() {
     ActivateCommand(CADCommandType::CIRCLE);
 }
 
+// 功能：激活矩形绘制命令。
 void CCADDlg::OnBnClickedRectangle() {
     ActivateCommand(CADCommandType::RECTANGLE);
 }
 
+// 功能：激活圆弧绘制命令。
 void CCADDlg::OnBnClickedArc() {
     ActivateCommand(CADCommandType::ARC);
 }
 
+// 功能：激活填充命令。
 void CCADDlg::OnBnClickedHatch() {
     ActivateCommand(CADCommandType::HATCH);
 }
 
+// 功能：切换到选择模式。
 void CCADDlg::OnBnClickedSel() {
     m_currentMode = CADMode::MODE_SELECT;
     CancelCurrentDrawing();
     UpdateModeButtonHighlight();
 }
 
+// 功能：显示顶点可视点。
 void CCADDlg::OnBnClickedViewPoint() {
     m_bShowPoints = true;
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：隐藏顶点可视点。
 void CCADDlg::OnBnClickedHidePoint() {
     m_bShowPoints = false;
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：以画布中心为基准放大视图。
 void CCADDlg::OnBnClickedZoomin() {
     CRect rect = m_transform.GetScreenRect();
     CPoint center(rect.Width() / 2, rect.Height() / 2);
-    m_transform.Zoom(1.2, center);
+    m_transform.Zoom(kZoomInFactor, center);
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：以画布中心为基准缩小视图。
 void CCADDlg::OnBnClickedZoomout() {
     CRect rect = m_transform.GetScreenRect();
     CPoint center(rect.Width() / 2, rect.Height() / 2);
-    m_transform.Zoom(0.8, center);
+    m_transform.Zoom(kZoomOutFactor, center);
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：重置视图变换到默认状态。
 void CCADDlg::OnBnClickedZoomdef() {
     CRect rect = m_transform.GetScreenRect();
     m_transform = CViewTransform();
@@ -356,30 +400,35 @@ void CCADDlg::OnBnClickedZoomdef() {
     FocusCommandLine();
 }
 
+// 功能：视图向上平移固定像素。
 void CCADDlg::OnBnClickedMup() {
-    m_transform.Pan(0, -20);
+    m_transform.Pan(0, -kPanStepPixel);
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：视图向下平移固定像素。
 void CCADDlg::OnBnClickedMdown() {
-    m_transform.Pan(0, 20);
+    m_transform.Pan(0, kPanStepPixel);
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：视图向左平移固定像素。
 void CCADDlg::OnBnClickedMl() {
-    m_transform.Pan(-20, 0);
+    m_transform.Pan(-kPanStepPixel, 0);
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：视图向右平移固定像素。
 void CCADDlg::OnBnClickedMr() {
-    m_transform.Pan(20, 0);
+    m_transform.Pan(kPanStepPixel, 0);
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：打开 DXF 文件并加载到当前画布。
 void CCADDlg::OnBnClickedOpen() {
     CFileDialog dlg(TRUE, L"dxf", nullptr,
         OFN_FILEMUSTEXIST | OFN_HIDEREADONLY,
@@ -403,6 +452,7 @@ void CCADDlg::OnBnClickedOpen() {
     FocusCommandLine();
 }
 
+// 功能：新建图纸并保存到用户选择的路径。
 void CCADDlg::OnBnClickedNew2() {
     CFileDialog dlg(FALSE, L"dxf", nullptr,
         OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY,
@@ -421,6 +471,7 @@ void CCADDlg::OnBnClickedNew2() {
     FocusCommandLine();
 }
 
+// 功能：保存当前图纸。
 void CCADDlg::OnBnClickedSave() {
     if (m_currentFilePath.IsEmpty()) {
         OnBnClickedNew2();
@@ -431,31 +482,37 @@ void CCADDlg::OnBnClickedSave() {
     FocusCommandLine();
 }
 
+// 功能：另存当前图纸。
 void CCADDlg::OnBnClickedSaveAs() {
     SaveAsWithDialog();
     FocusCommandLine();
 }
 
+// 功能：撤销一步操作。
 void CCADDlg::OnBnClickedUndo() {
     m_shapeMgr.Undo();
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：重做一步操作。
 void CCADDlg::OnBnClickedRedo() {
     m_shapeMgr.Redo();
     RefreshCanvas();
     FocusCommandLine();
 }
 
+// 功能：激活整线擦除命令。
 void CCADDlg::OnBnClickedDelLine() {
     ActivateCommand(CADCommandType::ERASER);
 }
 
+// 功能：激活节点删除命令。
 void CCADDlg::OnBnClickedDelPoint() {
     ActivateCommand(CADCommandType::DELETE_NODE);
 }
 
+// 功能：给选中线条应用颜色，或更新填充预览颜色。
 void CCADDlg::ApplyColorToSelectedLines(COLORREF color) {
     if (m_bHatchCommandActive) {
         m_hatchColor = color;
@@ -481,20 +538,28 @@ void CCADDlg::ApplyColorToSelectedLines(COLORREF color) {
     FocusCommandLine();
 }
 
-void CCADDlg::OnBnClickedColorWhite() { ApplyColorToSelectedLines(RGB(255, 255, 255)); }
+// 功能：把选中对象设置为白色。
+void CCADDlg::OnBnClickedColorWhite() { ApplyColorToSelectedLines(kCadColorWhite); }
 
-void CCADDlg::OnBnClickedColorRed() { ApplyColorToSelectedLines(RGB(255, 0, 0)); }
+// 功能：把选中对象设置为红色。
+void CCADDlg::OnBnClickedColorRed() { ApplyColorToSelectedLines(kCadColorRed); }
 
-void CCADDlg::OnBnClickedColorYellow() { ApplyColorToSelectedLines(RGB(255, 255, 0)); }
+// 功能：把选中对象设置为黄色。
+void CCADDlg::OnBnClickedColorYellow() { ApplyColorToSelectedLines(kCadColorYellow); }
 
-void CCADDlg::OnBnClickedColorGreen() { ApplyColorToSelectedLines(RGB(0, 255, 0)); }
+// 功能：把选中对象设置为绿色。
+void CCADDlg::OnBnClickedColorGreen() { ApplyColorToSelectedLines(kCadColorGreen); }
 
-void CCADDlg::OnBnClickedColorCyan() { ApplyColorToSelectedLines(RGB(0, 255, 255)); }
+// 功能：把选中对象设置为青色。
+void CCADDlg::OnBnClickedColorCyan() { ApplyColorToSelectedLines(kCadColorCyan); }
 
-void CCADDlg::OnBnClickedColorBlue() { ApplyColorToSelectedLines(RGB(0, 0, 255)); }
+// 功能：把选中对象设置为蓝色。
+void CCADDlg::OnBnClickedColorBlue() { ApplyColorToSelectedLines(kCadColorBlue); }
 
-void CCADDlg::OnBnClickedColorMagenta() { ApplyColorToSelectedLines(RGB(255, 0, 255)); }
+// 功能：把选中对象设置为洋红色。
+void CCADDlg::OnBnClickedColorMagenta() { ApplyColorToSelectedLines(kCadColorMagenta); }
 
+// 功能：弹出关于窗口。
 void CCADDlg::OnBnClickedAboutIcon() {
     CDialogEx aboutDlg(IDD_ABOUTBOX, this);
     aboutDlg.DoModal();
