@@ -4,10 +4,10 @@
 #include <memory>
 
 namespace {
-const int kArcBuildSegments = 120;
+const int kArcBuildSegments = 120;//精度
 }
 
-// 功能：处理圆弧工具左键点击，按三点法生成圆弧。
+//处理左键点击，按三点法生成圆弧
 bool CCADDlg::HandleArcToolLButtonDown(const Point2D& worldPt) {
     if (!(m_currentMode == CADMode::MODE_DRAW && m_bArcCommandActive)) return false;
 
@@ -31,7 +31,7 @@ bool CCADDlg::HandleArcToolLButtonDown(const Point2D& worldPt) {
     return true;
 }
 
-// 功能：处理圆弧工具鼠标移动，更新预览终点。
+//处理鼠标移动，更新预览终点
 bool CCADDlg::HandleArcToolMouseMove(const Point2D& worldPt) {
     if (!(m_bArcCommandActive && m_arcPointCount > 0)) return false;
 

@@ -51,12 +51,12 @@ public:
 	COLORREF GetFillColor() const;//读取填充颜色
     void SetTextEntity(bool isTextEntity);
     bool IsTextEntity() const;//是否有text
-    void SetTextContent(const std::wstring& text);//读取text
-    const std::wstring& GetTextContent() const;
-    void SetEntityType(EntityType type);
-    EntityType GetEntityType() const;
-    void SetEntityData(const EntityData& data);
-    const EntityData& GetEntityData() const;
+    void SetTextContent(const std::wstring& text);//设置text
+    const std::wstring& GetTextContent() const;//读取text
+    void SetEntityType(EntityType type);//设置线条元数据
+    EntityType GetEntityType() const;//读取线条元数据
+    void SetEntityData(const EntityData& data);//设置几何元数据
+    const EntityData& GetEntityData() const;//读取几何元数据
 
 	const std::vector<Point2D>& GetPoints() const;//读取点集
 

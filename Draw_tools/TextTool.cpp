@@ -10,7 +10,7 @@ const int kTextEditMinWidth = 32;
 const int kTextEditMinHeight = 20;
 }
 
-// 功能：处理文字工具左键点击，依次确定文本框两个对角点。
+//处理文字工具左键点击，依次确定文本框两个对角点
 bool CCADDlg::HandleTextToolLButtonDown(const Point2D& worldPt) {
     if (!(m_currentMode == CADMode::MODE_DRAW && m_bTextCommandActive)) return false;
 
@@ -31,7 +31,7 @@ bool CCADDlg::HandleTextToolLButtonDown(const Point2D& worldPt) {
     return true;
 }
 
-// 功能：处理文字工具鼠标移动，更新文本框预览。
+//处理文字工具鼠标移动，更新文本框预览
 bool CCADDlg::HandleTextToolMouseMove(const Point2D& worldPt) {
     if (!(m_bTextCommandActive && m_bTextFirstPicked)) return false;
 
@@ -39,7 +39,7 @@ bool CCADDlg::HandleTextToolMouseMove(const Point2D& worldPt) {
     return true;
 }
 
-// 功能：在画布文本框区域创建输入控件。
+//在画布文本框区域创建输入控件
 void CCADDlg::BeginTextInput(const std::shared_ptr<CLine>& textShape) {
     if (!textShape) return;
 
@@ -73,7 +73,7 @@ void CCADDlg::BeginTextInput(const std::shared_ptr<CLine>& textShape) {
     UpdateModeButtonHighlight();
 }
 
-// 功能：提交或取消当前文本输入。
+//提交或取消当前文本输入
 void CCADDlg::CommitTextInput(bool acceptInput) {
     if (!m_bTextInputActive) return;
 

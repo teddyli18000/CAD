@@ -3,7 +3,7 @@
 
 #include <memory>
 
-// 功能：处理矩形工具左键点击，依次确定两个对角点。
+//处理左键点击，依次确定两个对角点
 bool CCADDlg::HandleRectToolLButtonDown(const Point2D& worldPt) {
     if (!(m_currentMode == CADMode::MODE_DRAW && m_bRectangleCommandActive)) return false;
 
@@ -20,7 +20,7 @@ bool CCADDlg::HandleRectToolLButtonDown(const Point2D& worldPt) {
     return true;
 }
 
-// 功能：处理矩形工具鼠标移动，更新对角点预览。
+//处理鼠标移动，更新对角点预览
 bool CCADDlg::HandleRectToolMouseMove(const Point2D& worldPt) {
     if (!(m_bRectangleCommandActive && m_bRectangleFirstPicked)) return false;
 

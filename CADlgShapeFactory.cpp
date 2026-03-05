@@ -18,7 +18,7 @@ const double kTwoPi = 6.28318530717958647692;
 const double kGeomEpsilon = 1e-9;
 }
 
-// 功能：根据圆心和半径构造离散圆折线。
+//根据圆心和半径构造离散圆折线
 std::shared_ptr<CLine> CCADDlg::CreateCirclePolyline(const Point2D& center, double radius, int segments) const {
     std::shared_ptr<CLine> circle = std::make_shared<CLine>();
     if (segments < kMinCircleSegments) segments = kMinCircleSegments;
@@ -38,9 +38,9 @@ std::shared_ptr<CLine> CCADDlg::CreateCirclePolyline(const Point2D& center, doub
     }
 
     return circle;
-}
+}// 0..2Π
 
-// 功能：根据对角点构造闭合矩形折线。
+//根据对角点构造闭合矩形折线
 std::shared_ptr<CLine> CCADDlg::CreateRectanglePolyline(const Point2D& first, const Point2D& second) const {
     std::shared_ptr<CLine> rect = std::make_shared<CLine>();
     rect->SetEntityType(EntityType::RECTANGLE);
@@ -57,7 +57,7 @@ std::shared_ptr<CLine> CCADDlg::CreateRectanglePolyline(const Point2D& first, co
     return rect;
 }
 
-// 功能：由三点构造圆弧折线（起点-过点-终点）。
+//由三点构造圆弧折线（起点-过点-终点）
 std::shared_ptr<CLine> CCADDlg::CreateArcPolylineByThreePoints(const Point2D& start, const Point2D& through, const Point2D& end, int segments) const {
     std::shared_ptr<CLine> arc = std::make_shared<CLine>();
 

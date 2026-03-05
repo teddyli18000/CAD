@@ -6,10 +6,10 @@
 
 namespace {
 const double kCircleRadiusMin = 0.0001;
-const int kCircleSegments = 96;
+const int kCircleSegments = 96;//精度
 }
 
-// 功能：处理圆工具左键点击，依次确定圆心与半径。
+//处理左键点击，依次确定圆心与半径
 bool CCADDlg::HandleCircleToolLButtonDown(const Point2D& worldPt) {
     if (!(m_currentMode == CADMode::MODE_DRAW && m_bCircleCommandActive)) return false;
 
@@ -31,7 +31,7 @@ bool CCADDlg::HandleCircleToolLButtonDown(const Point2D& worldPt) {
     return true;
 }
 
-// 功能：处理圆工具鼠标移动，更新半径预览点。
+//处理鼠标移动，更新半径预览点
 bool CCADDlg::HandleCircleToolMouseMove(const Point2D& worldPt) {
     if (!(m_bCircleCommandActive && m_bCircleCenterPicked)) return false;
 
