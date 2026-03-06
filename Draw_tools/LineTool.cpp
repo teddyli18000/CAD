@@ -19,6 +19,8 @@ bool CCADDlg::HandleLineToolLButtonDown(const Point2D& worldPt) {
 
     return true;
 }
+// return: true:已处理折线节点输入;
+// false:当前未处于线段绘制状态;
 
 //处理鼠标移动，更新最后一个预览点
 bool CCADDlg::HandleLineToolMouseMove(const Point2D& worldPt) {
@@ -32,3 +34,5 @@ bool CCADDlg::HandleLineToolMouseMove(const Point2D& worldPt) {
 
     return false;
 }
+// return: true:已更新折线预览末点;
+// false:当前无可更新的绘制状态;

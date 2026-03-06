@@ -29,6 +29,8 @@ bool CCADDlg::HandleCircleToolLButtonDown(const Point2D& worldPt) {
 
     return true;
 }
+// return: true:已处理圆心/半径输入并可能完成建圆;
+// false:未处于圆绘制状态;
 
 //处理鼠标移动，更新半径预览点
 bool CCADDlg::HandleCircleToolMouseMove(const Point2D& worldPt) {
@@ -37,3 +39,5 @@ bool CCADDlg::HandleCircleToolMouseMove(const Point2D& worldPt) {
     m_circlePreviewPoint = worldPt;
     return true;
 }
+// return: true:已更新圆半径预览点;
+// false:无有效圆预览状态;

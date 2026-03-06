@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "../CADDlg.h"
 #include "../CADlgGeometryUtils.h"
 

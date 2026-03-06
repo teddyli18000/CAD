@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "framework.h"
 #include "CAD.h"
 #include "CADDlg.h"
@@ -227,6 +227,7 @@ BOOL CCADDlg::OnInitDialog() {
     FocusCommandLine();
     return FALSE;
 }
+// return: FALSE:由mfc设置输入焦点;
 
 void CCADDlg::UpdateFileInfoDisplay() {
     CString filePathText;
@@ -418,6 +419,7 @@ bool CCADDlg::SaveToCurrentPath() {
     UpdateFileInfoDisplay();
     return ok;
 }
+// return: true:保存成功并更新已保存状态; false:保存失败或路径无效;
 
 //弹出另存为对话框并保存
 bool CCADDlg::SaveAsWithDialog() {
@@ -432,6 +434,7 @@ bool CCADDlg::SaveAsWithDialog() {
     UpdateFileInfoDisplay();
     return saved;
 }
+// return: true:用户确认路径且另存成功; false:用户取消或另存失败;
 
 //激活line绘制命令
 void CCADDlg::OnBnClickedDraw() {

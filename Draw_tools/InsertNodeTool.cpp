@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "../CADDlg.h"
 #include "../CADlgGeometryUtils.h"
 
@@ -13,6 +13,9 @@ const double kPointEpsilon = 1e-9;
 bool IsSamePoint(const Point2D& a, const Point2D& b) {
     return std::fabs(a.x - b.x) <= kPointEpsilon && std::fabs(a.y - b.y) <= kPointEpsilon;
 }
+// return: 
+// true:两点相同; 
+// false:两点不同;
 
 Point2D ProjectPointToSegment(const CPoint& p, const CPoint& a, const CPoint& b) {
     const double dx = static_cast<double>(b.x - a.x);
@@ -28,6 +31,7 @@ Point2D ProjectPointToSegment(const CPoint& p, const CPoint& a, const CPoint& b)
 
     return Point2D(static_cast<double>(a.x) + t * dx, static_cast<double>(a.y) + t * dy);
 }
+// return: Point2D:点在目标线段上的投影点（screen坐标系数值）;
 
 std::shared_ptr<CLine> CreateInsertedLine(const CLine& original, size_t segEndIndex, const Point2D& insertedPoint) {
     const auto& pts = original.GetPoints();
@@ -50,6 +54,9 @@ std::shared_ptr<CLine> CreateInsertedLine(const CLine& original, size_t segEndIn
     replaced->SetEntityData(original.GetEntityData());
     return replaced;
 }
+// return: 
+// std::shared_ptr<CLine>:插入节点后的新折线; 
+// nullptr:输入参数无效无法插入;
 }
 
 //插入节点模式下，左键点击时按最近线段插入新节点
@@ -61,6 +68,8 @@ bool CCADDlg::HandleInsertNodeToolLButtonDown(const CPoint& localPt) {
     InsertNodeAtPoint(localPt);
     return true;
 }
+// return: true:已处理插入节点点击;
+// false:当前未激活插入节点命令;
 
 //更新插入节点模式的容差光标位置
 bool CCADDlg::HandleInsertNodeToolMouseMove(const CPoint& localPt, bool inCanvas) {
@@ -72,6 +81,8 @@ bool CCADDlg::HandleInsertNodeToolMouseMove(const CPoint& localPt, bool inCanvas
     }
     return true;
 }
+// return: true:已更新插入节点容差光标; 
+// false:当前未激活插入节点命令;
 
 //在容差范围内查找最近线段，并插入一个新节点
 void CCADDlg::InsertNodeAtPoint(const CPoint& localPt) {

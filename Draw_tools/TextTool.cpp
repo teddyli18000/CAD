@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "../CADDlg.h"
 #include "../resource.h"
 
@@ -29,6 +29,8 @@ bool CCADDlg::HandleTextToolLButtonDown(const Point2D& worldPt) {
 
     return true;
 }
+// return: true:已处理文本框角点输入并可能进入文字输入; 
+// false:当前未处于文字绘制状态;
 
 //处理文字工具鼠标移动，更新文本框预览
 bool CCADDlg::HandleTextToolMouseMove(const Point2D& worldPt) {
@@ -37,6 +39,8 @@ bool CCADDlg::HandleTextToolMouseMove(const Point2D& worldPt) {
     m_textPreviewPoint = worldPt;
     return true;
 }
+// return: true:已更新文本框预览点; 
+// false:当前无有效文本框预览状态;
 
 //在画布文本框区域创建输入控件
 void CCADDlg::BeginTextInput(const std::shared_ptr<CLine>& textShape) {

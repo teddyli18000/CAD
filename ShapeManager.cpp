@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CShapeManager.h"
 #include <algorithm>
 #include <cctype>
@@ -47,6 +47,7 @@ std::string Trim(const std::string& text) {
     }
     return s.substr(start);
 }
+// return: std::string:去除首尾空白后的字符串;
 
 //把 RGB 颜色映射为 DXF ACI 颜色索引
 int ColorToDxfAci(COLORREF color) {
@@ -58,6 +59,7 @@ int ColorToDxfAci(COLORREF color) {
     if (color == kCadColorMagenta) return kDxfAciMagenta;
     return kDxfAciWhite;
 }
+// return: int:对应的DXF ACI颜色索引;
 
 //把 DXF ACI 颜色索引映射回 RGB
 COLORREF DxfAciToColor(int aci) {
@@ -73,6 +75,7 @@ COLORREF DxfAciToColor(int aci) {
         return kCadColorWhite;
     }
 }
+// return: COLORREF:ACI索引映射得到的RGB颜色;
 
 //text to int, for DXF metadata storage
 int EntityTypeToInt(EntityType type) {
@@ -84,6 +87,7 @@ int EntityTypeToInt(EntityType type) {
     default: return 0;
     }
 }
+// return: int:图元类型对应的整数编码;
 
 //int to text, for DXF metadata parsing
 EntityType IntToEntityType(int value) {
@@ -96,6 +100,7 @@ EntityType IntToEntityType(int value) {
         return EntityType::LINE;
     }
 }
+// return: EntityType:整数编码映射得到的图元类型;
 
 void AppendEntityMetadata(std::ostringstream& dxf, const CLine& shape) {
     const EntityData& data = shape.GetEntityData();
@@ -123,6 +128,7 @@ std::string WideToUtf8(const std::wstring& text) {
     ::WideCharToMultiByte(CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()), &utf8[0], size, nullptr, nullptr);
     return utf8;
 }
+// return: std::string:UTF-8编码字符串；转换失败或空输入：返回空字符串;
 
 std::wstring Utf8ToWide(const std::string& text) {
     if (text.empty()) return {};
@@ -132,6 +138,7 @@ std::wstring Utf8ToWide(const std::string& text) {
     ::MultiByteToWideChar(CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()), &wide[0], size);
     return wide;
 }
+// return: std::wstring:宽字符字符串；转换失败或空输入：返回空字符串;
 }
 
 //向图元列表添加一个图形对象
@@ -158,11 +165,13 @@ void CShapeManager::Clear() {
 std::vector<std::shared_ptr<CLine>>& CShapeManager::GetShapes() {
     return m_shapes;
 }
+// return: std::vector<std::shared_ptr<CLine>>&:图元容器可写引用;
 
-//返回只读的图形容器引用
+//返回read-only的图形容器引用
 const std::vector<std::shared_ptr<CLine>>& CShapeManager::GetShapes() const {
     return m_shapes;
 }
+// return: const std::vector<std::shared_ptr<CLine>>&:图元容器read-only引用;
 
 //绘制所有图元
 void CShapeManager::DrawAll(CDC* pDC, const CViewTransform& transform, bool bShowPoints) const {
@@ -210,6 +219,9 @@ void CShapeManager::MarkSaved() {
 bool CShapeManager::HasUnsavedChanges() const {
     return m_historyIndex != m_savedHistoryIndex;
 }
+// return
+// true:存在未保存修改;
+// false:当前状态与已保存状态一致;
 
 //将当前图元导出为 DXF 文件
 bool CShapeManager::SaveToDXF(const std::wstring& filepath) const {
@@ -263,6 +275,9 @@ bool CShapeManager::SaveToDXF(const std::wstring& filepath) const {
     fclose(outFile);
     return true;
 }
+// return
+// true:DXF文件保存成功;
+// false:文件无法创建或打开导致保存失败;
 
 //从 DXF 文件加载图元数据
 bool CShapeManager::LoadFromDXF(const std::wstring& filepath) {
@@ -486,3 +501,6 @@ bool CShapeManager::LoadFromDXF(const std::wstring& filepath) {
 
     return true;
 }
+// return
+// true:DXF文件加载并解析成功;
+// false:文件无法打开导致加载失败;

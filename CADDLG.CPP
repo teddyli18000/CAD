@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CADDlg.h"
 
 //绘图区静态控件点击响应（迁移至鼠标处理）

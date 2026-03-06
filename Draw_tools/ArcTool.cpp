@@ -29,6 +29,8 @@ bool CCADDlg::HandleArcToolLButtonDown(const Point2D& worldPt) {
 
     return true;
 }
+// return: true:已处理圆弧三点输入流程;
+// false:当前未处于圆弧绘制状态;
 
 //处理鼠标移动，更新预览终点
 bool CCADDlg::HandleArcToolMouseMove(const Point2D& worldPt) {
@@ -37,3 +39,5 @@ bool CCADDlg::HandleArcToolMouseMove(const Point2D& worldPt) {
     m_arcPreviewPoint = worldPt;
     return true;
 }
+// return: true:已更新圆弧预览点; 
+// false:无有效圆弧预览状态;

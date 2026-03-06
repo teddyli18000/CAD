@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "framework.h"
 #include "CAD.h"
 #include "CADDlg.h"
@@ -146,6 +146,8 @@ BOOL CCADDlg::PreTranslateMessage(MSG* pMsg) {
         if (::GetClassName(pMsg->hwnd, className, _countof(className)) > 0 && _tcsicmp(className, _T("Button")) == 0) {
             return handled;
         }
+// return: TRUE:按键或命令已由当前对话框处理; 
+// FALSE:未处理, 交由默认消息流程处理;
         FocusCommandLine();
     }
 

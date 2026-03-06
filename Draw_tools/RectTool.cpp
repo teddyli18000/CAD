@@ -18,6 +18,8 @@ bool CCADDlg::HandleRectToolLButtonDown(const Point2D& worldPt) {
 
     return true;
 }
+// return: true:已处理矩形对角点输入并可能完成建形;
+// false:当前未处于矩形绘制状态;
 
 //处理鼠标移动，更新对角点预览
 bool CCADDlg::HandleRectToolMouseMove(const Point2D& worldPt) {
@@ -26,3 +28,5 @@ bool CCADDlg::HandleRectToolMouseMove(const Point2D& worldPt) {
     m_rectPreviewPoint = worldPt;
     return true;
 }
+// return: true:已更新矩形预览点;
+// false:当前无有效矩形预览状态;

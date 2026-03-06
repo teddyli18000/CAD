@@ -25,6 +25,8 @@ bool CCADDlg::HandleSelectionToolLButtonDown(const CPoint& localPt) {
         SetCapture();
         return true;
     }
+// return: true:已开始移动选中集或框选流程;
+// false:当前不满足选择工具处理条件;
 
     m_bIsSelectingBox = true;
     m_selectBoxStart = localPt;
@@ -61,6 +63,8 @@ bool CCADDlg::HandleSelectionToolMouseMove(const CPoint& localPt) {
     m_selectBoxEnd = localPt;
     return true;
 }
+// return: true:已处理移动选中集或框选预览更新;
+// false:当前无可处理的选择动作;
 
 //结束框选流程，应用框选结果并释放鼠标捕获
 bool CCADDlg::HandleSelectionToolLButtonUp(const CPoint& localPt) {
@@ -92,3 +96,5 @@ bool CCADDlg::HandleSelectionToolLButtonUp(const CPoint& localPt) {
     }
     return true;
 }
+// return: true:已结束移动或框选并完成结果应用;
+// false:当前无有效选择结束动作;

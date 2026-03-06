@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "framework.h"
 #include "CAD.h"
 #include "CADDlg.h"
@@ -158,6 +158,8 @@ BOOL CCADDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) {
     FocusCommandLine();
     return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }
+// return: TRUE:滚轮消息已处理并允许继续默认流程; 
+// FALSE:未继续处理滚轮;
 
 //处理中键按下，进入平移拖动模式
 void CCADDlg::OnMButtonDown(UINT nFlags, CPoint point) {

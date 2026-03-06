@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "../CADDlg.h"
 
 namespace {
@@ -36,3 +36,4 @@ void CCADDlg::DrawCursor(CDC* pDC) {
         pDC->SelectObject(oldPen);
     }
 }
+

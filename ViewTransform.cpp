@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CViewTransform.h"
 
 namespace {
@@ -14,6 +14,7 @@ void CViewTransform::SetScreenRect(const CRect& rect) { m_screenRect = rect; }
 
 //获取绘图区屏幕矩形
 CRect CViewTransform::GetScreenRect() const { return m_screenRect; }
+// return: CRect:当前绘图区屏幕矩形;
 
 //围绕指定屏幕点执行缩放
 void CViewTransform::Zoom(double factor, const CPoint& screenCenter) {
@@ -33,12 +34,13 @@ void CViewTransform::Pan(int deltaX, int deltaY) {
     m_offsetY -= deltaY / m_scale;
 }
 
-//将世界坐标转换为屏幕坐标
+//world->screen
 CPoint CViewTransform::WorldToScreen(const Point2D& pt) const {
     int sx = static_cast<int>((pt.x + m_offsetX) * m_scale);
     int sy = m_screenRect.Height() - static_cast<int>((pt.y + m_offsetY) * m_scale);
     return CPoint(sx, sy);
 }
+// return: CPoint: processed screen;
 
 //将屏幕坐标转换为世界坐标
 Point2D CViewTransform::ScreenToWorld(const CPoint& pt) const {
@@ -46,3 +48,4 @@ Point2D CViewTransform::ScreenToWorld(const CPoint& pt) const {
     double wy = (m_screenRect.Height() - pt.y) / m_scale - m_offsetY;
     return Point2D(wx, wy);
 }
+// return: Point2D: processed world;

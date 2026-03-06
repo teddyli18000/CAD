@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "framework.h"
 #include "CAD.h"
 #include "CADDlg.h"
@@ -46,6 +46,8 @@ bool TryGetPaletteColor(int ctrlId, COLORREF& color) {
     default: return false;
     }
 }
+// return: true:ctrlId对应有效调色板颜色并已写入color;
+// false:ctrlId不在调色板映射中;
 }
 
 // 绘制按钮（颜色按钮与关于图标按钮）

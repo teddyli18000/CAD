@@ -12,6 +12,8 @@ bool CCADDlg::HandleEraserToolLButtonDown(const CPoint& localPt) {
     SetCapture();
     return true;
 }
+// return: true:已进入擦除流程并执行一次命中处理;
+// false:未激活;
 
 //更新橡皮擦光标位置，并在拖动时持续擦除
 bool CCADDlg::HandleEraserToolMouseMove(UINT nFlags, const CPoint& localPt, bool inCanvas) {
@@ -26,6 +28,8 @@ bool CCADDlg::HandleEraserToolMouseMove(UINT nFlags, const CPoint& localPt, bool
     }
     return true;
 }
+// return: true:已处理擦除光标/拖拽擦除更新;
+// false:未激活;
 
 //结束擦除流程并释放鼠标捕获
 bool CCADDlg::HandleEraserToolLButtonUp() {
@@ -37,3 +41,5 @@ bool CCADDlg::HandleEraserToolLButtonUp() {
     }
     return true;
 }
+// return: true:已结束擦除流程;
+// false:不在有效擦除状态;

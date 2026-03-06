@@ -1,4 +1,4 @@
-// CAD app entry / 程序入口
+﻿// CAD app entry / 程序入口
 
 #include "pch.h"
 #include "framework.h"
@@ -34,7 +34,7 @@ CCADApp::CCADApp()
 CCADApp theApp;
 
 
-// app init / 应用初始化
+// app init
 
 //初始化 MFC 应用并启动主对话框
 BOOL CCADApp::InitInstance()
@@ -90,4 +90,6 @@ BOOL CCADApp::InitInstance()
 	// exit app after dialog / 对话框关闭后退出应用
 	return FALSE;
 }
+// return: FALSE:主对话框关闭后结束应用
+
 

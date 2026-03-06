@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "../CADDlg.h"
 
 #include <cmath>
@@ -18,6 +18,7 @@ bool IsClosedShape(const CLine& shape) {
     const Point2D& b = pts.back();
     return std::fabs(a.x - b.x) <= kPointEqualEpsilon && std::fabs(a.y - b.y) <= kPointEqualEpsilon;
 }
+// return: true:图元首尾闭合可用于填充; false:图元不闭合;
 
 //射线法判断点是否在多边形内部
 bool PointInPolygon(const std::vector<CPoint>& polygon, const CPoint& p) {
@@ -47,6 +48,9 @@ bool PointInPolygon(const std::vector<CPoint>& polygon, const CPoint& p) {
 
     return inside;
 }
+// return: 
+// true:内部;
+// false:外部;
 
 //按绘制顺序从上到下查找命中点所在的闭合图元
 std::shared_ptr<CLine> FindClosedShapeAtPoint(const CShapeManager& shapeMgr, const CViewTransform& transform, const CPoint& localPt) {
@@ -69,6 +73,8 @@ std::shared_ptr<CLine> FindClosedShapeAtPoint(const CShapeManager& shapeMgr, con
 
     return nullptr;
 }
+// return: std::shared_ptr<CLine>:命中的闭合图元; 
+// nullptr:未命中任何闭合图元;
 }
 
 //处理填充工具左键点击，提交填充命令
@@ -83,6 +89,8 @@ bool CCADDlg::HandleHatchToolLButtonDown(const CPoint& localPt) {
     m_hatchPreviewPoint = localPt;
     return true;
 }
+// return: true:已命中闭合图元并执行填充; 
+// false:当前状态无效或未命中;
 
 // 处理填充工具鼠标移动，更新填充预览状态
 bool CCADDlg::HandleHatchToolMouseMove(const CPoint& localPt, bool inCanvas) {
@@ -96,6 +104,8 @@ bool CCADDlg::HandleHatchToolMouseMove(const CPoint& localPt, bool inCanvas) {
 
     return true;
 }
+// return: true:已处理填充预览更新; 
+// false:当前未激活填充命令;
 
 // 绘制填充工具预览效果
 void CCADDlg::DrawHatchPreview(CDC* pDC) {
@@ -121,3 +131,4 @@ void CCADDlg::DrawHatchPreview(CDC* pDC) {
     pDC->SelectObject(oldPen);
     pDC->SelectObject(oldBrush);
 }
+

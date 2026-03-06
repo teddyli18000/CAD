@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CADDlg.h"
 #include "CADlgGeometryUtils.h"
 
@@ -28,11 +28,15 @@ const int kSelectionClickThreshold = 2;
 bool IsSamePoint(const Point2D& a, const Point2D& b) {
     return std::fabs(a.x - b.x) <= kPointEpsilon && std::fabs(a.y - b.y) <= kPointEpsilon;
 }
+// return: true:两点相同;
+// false:两点不同;
 
 // 判断折线是否为首尾闭合
 bool IsClosedPolyline(const std::vector<Point2D>& pts) {
     return pts.size() >= kMinClosedPolylineSize && IsSamePoint(pts.front(), pts.back());
 }
+// return: true:折线首尾闭合 && 点数满足要求; 
+// false:非闭合折线;
 
 // 根据点集创建一条基础折线对象
 std::shared_ptr<CLine> CreateLineFromPoints(const std::vector<Point2D>& pts) {
@@ -43,6 +47,9 @@ std::shared_ptr<CLine> CreateLineFromPoints(const std::vector<Point2D>& pts) {
     }
     return line;
 }
+// return: 
+// std::shared_ptr<CLine>:成功创建的折线对象; 
+// nullptr:点数不足，无法创建;
 
 // 开放折线按命中段切分为左右两段 /insert node
 std::vector<std::shared_ptr<CLine>> CreateOpenSplitLines(const std::vector<Point2D>& pts, size_t segEndIndex) {
@@ -64,6 +71,7 @@ std::vector<std::shared_ptr<CLine>> CreateOpenSplitLines(const std::vector<Point
 
     return result;
 }
+// return: std::vector<std::shared_ptr<CLine>>:开放折线按命中段切分后的有效子折线集合;
 
 // 闭合折线删除一段后重建保留路径 /for circle or arc
 std::vector<std::shared_ptr<CLine>> CreateClosedSegmentRemovedLine(const std::vector<Point2D>& pts, size_t segEndIndex) {
@@ -86,6 +94,7 @@ std::vector<std::shared_ptr<CLine>> CreateClosedSegmentRemovedLine(const std::ve
 
     return result;
 }
+// return: std::vector<std::shared_ptr<CLine>>:闭合折线删段后重建得到的保留路径集合（通常0或1条）;
 
 // 估计折线是否更接近平滑曲线 /for circle or arc when erase
 bool IsSmoothCurvePolyline(const std::vector<Point2D>& pts) {
@@ -118,6 +127,8 @@ bool IsSmoothCurvePolyline(const std::vector<Point2D>& pts) {
     if (totalTurns <= 0) return false;
     return (static_cast<double>(smoothTurns) / static_cast<double>(totalTurns)) >= kSmoothRatioThreshold;
 }
+// return: true:折线转角变化平滑且可判定为曲线; 
+// false:更接近折线/信息不足;
 }
 
 //清空当前所有图元的选中状态
@@ -136,6 +147,8 @@ bool CCADDlg::HasSelectedLines() const {
     }
     return false;
 }
+// return: true:至少存在一条已选中线条;
+// false:当前无选中线条;
 
 // 根据框选矩形更新选中图元
 void CCADDlg::ApplySelectionBox() {

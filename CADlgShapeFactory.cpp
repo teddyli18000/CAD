@@ -40,6 +40,7 @@ std::shared_ptr<CLine> CCADDlg::CreateCirclePolyline(const Point2D& center, doub
 
     return circle;
 }// 0..2Π
+// return: std::shared_ptr<CLine>:离散圆折线对象，半径无效时返回空点集对象;
 
 //根据对角点构造闭合矩形折线
 std::shared_ptr<CLine> CCADDlg::CreateRectanglePolyline(const Point2D& first, const Point2D& second) const {
@@ -57,6 +58,7 @@ std::shared_ptr<CLine> CCADDlg::CreateRectanglePolyline(const Point2D& first, co
     rect->AddPoint(p1);
     return rect;
 }
+// return: std::shared_ptr<CLine>:闭合矩形折线对象;
 
 //由三点构造圆弧折线（起点-过点-终点）
 std::shared_ptr<CLine> CCADDlg::CreateArcPolylineByThreePoints(const Point2D& start, const Point2D& through, const Point2D& end, int segments) const {
@@ -69,6 +71,7 @@ std::shared_ptr<CLine> CCADDlg::CreateArcPolylineByThreePoints(const Point2D& st
         arc->AddPoint(end);
         return arc;
     }
+// return: std::shared_ptr<CLine>:圆弧折线对象；三点近共线或半径异常时返回退化折线;
 
     const double s2 = start.x * start.x + start.y * start.y;
     const double t2 = through.x * through.x + through.y * through.y;
