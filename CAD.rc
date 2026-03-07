@@ -96,8 +96,8 @@ CAPTION "About CAD"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "CAD，版本 0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright @Xinchen Lee (C) 2026",IDC_STATIC,42,26,114,8
+    LTEXT           "XCAD，版本 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "© 2026 Xinchen Lee",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
 END
 
@@ -170,13 +170,13 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "TODO: <¹«Ë¾Ãû>"
-            VALUE "FileDescription", "CAD"
+            VALUE "CompanyName", "© 2026 Xinchen Lee"
+            VALUE "FileDescription", "XCAD"
             VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "CAD.exe"
-            VALUE "LegalCopyright", "TODO:  (C) <¹«Ë¾Ãû>¡£  ±£ÁôËùÓÐÈ¨Àû¡£"
-            VALUE "OriginalFilename", "CAD.exe"
-            VALUE "ProductName", "TODO: <²úÆ·Ãû>"
+            VALUE "InternalName", "XCAD.exe"
+            VALUE "LegalCopyright", "© 2026 Xinchen Lee"
+            VALUE "OriginalFilename", "XCAD.exe"
+            VALUE "ProductName", "XCAD"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END
