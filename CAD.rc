@@ -1,0 +1,301 @@
+// Microsoft Visual C++ generated resource script.
+//
+#pragma code_page(65001)
+
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (Simplified, China) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#include ""res\\CAD.rc2""  // resource add-in / 资源附加\n"
+    "#include ""afxres.rc""      // MFC core resources / MFC核心资源\r\n"
+    "#if !defined(_AFXDLL)\r\n"
+    "#include ""afxribbon.rc""   // MFC ribbon resources / MFC功能区资源\n"
+    "#endif\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\CAD.ico"
+
+#endif    // Chinese (Simplified, China) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About XCAD"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "XCAD，版本 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "© 2026 Xinchen Lee",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_CAD_DIALOG DIALOGEX 0, 0, 906, 535
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "XCAD"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "?",IDC_ABOUT_ICON,62,10,13,15
+    PUSHBUTTON      "直线",IDC_DRAW_LINE,7,283,50,15
+    PUSHBUTTON      "三角形",IDC_DRAW_TRIANGLE,7,299,50,15
+    PUSHBUTTON      "圆",IDC_DRAW_CIRCLE,7,315,50,15
+    PUSHBUTTON      "矩形",IDC_DRAW_RECT,7,331,50,15
+    PUSHBUTTON      "圆弧",IDC_DRAW_ARC,7,347,50,15
+    EDITTEXT        IDC_CMD_LINE,7,474,892,41,ES_AUTOHSCROLL | ES_WANTRETURN
+    LTEXT           "",IDC_DRAW_AREA,79,4,820,460,SS_SUNKEN | WS_BORDER
+    PUSHBUTTON      "打开文件",IDC_OPEN,7,22,50,14
+    PUSHBUTTON      "新建文件",IDC_NEW2,7,5,50,14
+    PUSHBUTTON      "保存",IDC_SAVE,7,40,50,14
+    PUSHBUTTON      "另存为",IDC_SAVE_AS,7,58,50,14
+    PUSHBUTTON      "填充",IDC_HATCH,7,397,50,14
+    PUSHBUTTON      "文字",IDC_DRAW_TEXT,7,413,50,14
+    PUSHBUTTON      "绘图模式",IDC_DRAW,7,79,50,14
+    PUSHBUTTON      "选择模式",IDC_SEL,7,96,50,14
+    PUSHBUTTON      "橡皮擦",IDC_DEL_LINE,7,365,50,14
+    PUSHBUTTON      "删除线段",IDC_DEL_SEGMENT,7,381,50,14
+    PUSHBUTTON      "显示节点",IDC_VIEW_POINT,7,112,50,14
+    PUSHBUTTON      "隐藏节点",IDC_HIDE_POINT,7,128,50,14
+    PUSHBUTTON      "",IDC_COLOR_WHITE,61,88,12,12
+    PUSHBUTTON      "",IDC_COLOR_RED,61,104,12,12
+    PUSHBUTTON      "",IDC_COLOR_YELLOW,61,120,12,12
+    PUSHBUTTON      "",IDC_COLOR_GREEN,61,136,12,12
+    PUSHBUTTON      "",IDC_COLOR_CYAN,61,152,12,12
+    PUSHBUTTON      "",IDC_COLOR_BLUE,61,168,12,12
+    PUSHBUTTON      "",IDC_COLOR_MAGENTA,61,184,12,12
+    PUSHBUTTON      "放大",IDC_ZOOMIN,7,169,50,14
+    PUSHBUTTON      "缩小",IDC_ZOOMOUT,7,186,50,14
+    PUSHBUTTON      "默认缩放",IDC_ZOOMDEF,7,153,50,14
+    PUSHBUTTON      "上移",IDC_MUP,7,203,50,14
+    PUSHBUTTON      "下移",IDC_MDOWN,7,219,50,14
+    PUSHBUTTON      "左移",IDC_ML,7,236,50,14
+    PUSHBUTTON      "右移",IDC_MR,7,253,50,14
+    PUSHBUTTON      "插入节点",IDC_INSERT_NODE,7,429,50,14
+    PUSHBUTTON      "撤销",IDC_UNDO,7,445,50,14
+    PUSHBUTTON      "恢复",IDC_REDO,7,461,50,14
+    EDITTEXT        IDC_FILE_PATH_INFO,7,515,672,16,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_FILE_SIZE_INFO,679,515,220,16,ES_AUTOHSCROLL | ES_READONLY
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "© 2026 Xinchen Lee"
+            VALUE "FileDescription", "XCAD"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "XCAD.exe"
+            VALUE "LegalCopyright", "© 2026 Xinchen Lee"
+            VALUE "OriginalFilename", "XCAD.exe"
+            VALUE "ProductName", "XCAD"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_CAD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 899
+        BOTTOMMARGIN, 528
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_CAD_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 100, 100, 0,
+    0, 0, 100, 100,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 100, 100, 0,
+    100, 100, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_ABOUTBOX            "关于 XCAD(&A)..."
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#include "res\CAD.rc2"  // resource add-in / 璧勬簮闄勫姞
+#include "afxres.rc"      // MFC core resources / MFC鏍稿績璧勬簮
+#if !defined(_AFXDLL)
+#include "afxribbon.rc"   // MFC ribbon resources / MFC鍔熻兘鍖鸿祫婧?#endif
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+#endif
