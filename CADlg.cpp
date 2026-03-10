@@ -305,7 +305,7 @@ void CCADDlg::UpdateModeButtonHighlight() {
     const bool textActive = (m_currentMode == CADMode::MODE_DRAW && m_bTextCommandActive);
     const bool arcActive = (m_currentMode == CADMode::MODE_DRAW && m_bArcCommandActive);
     const bool hatchActive = (m_currentMode == CADMode::MODE_SELECT && m_bHatchCommandActive);
-    const bool drawModeActive = lineActive || circleActive || rectActive || textActive || arcActive || hatchActive;
+    const bool drawModeActive = lineActive || circleActive || rectActive || textActive || arcActive || hatchActive || triangleActive;
     const bool eraseActive = (m_currentMode == CADMode::MODE_SELECT && m_bEraserCommandActive);
     const bool deleteSegmentActive = (m_currentMode == CADMode::MODE_SELECT && m_bDeleteSegmentCommandActive);
     const bool insertNodeActive = (m_currentMode == CADMode::MODE_SELECT && m_bInsertNodeCommandActive);

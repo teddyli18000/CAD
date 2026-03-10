@@ -2,7 +2,6 @@
 #include "../CADDlg.h"
 
 #include <memory>
-#include <vector>
 
 bool CCADDlg::HandleTriangleToolLButtonDown(const Point2D& worldPt) {
     if (!(m_currentMode == CADMode::MODE_DRAW && m_bTriangleCommandActive)) return false;
